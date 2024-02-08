@@ -44,19 +44,24 @@ const quesJSON = [
 
 let score = 0;
 let currenQues = 0;
-
 // fetching all the the divs
 const ques = document.getElementById("question");
 const optEle = document.getElementById("options");
 const scoreEle = document.getElementById("score");
+const nextEle = document.getElementById("next");
+const submitEle = document.getElementById("submit");
 
 // calling the show question function
 showQuestions();
+nextEle.addEventListener("click", () => {
+  scoreEle.textContent = `Score: ${score} / ${quesJSON.length} `;
+  nextQuestion();
+});
 
 // function which populate question and options
 function showQuestions() {
   // destructing the obj
-  const { correctAnswr, options, question } = quesJSON[currenQues];
+  const { correctAnswer, options, question } = quesJSON[currenQues];
   ques.textContent = question;
   console.log(question);
 
@@ -68,25 +73,39 @@ function showQuestions() {
     const btn = document.createElement("button");
     btn.textContent = option;
     optEle.appendChild(btn);
+    let flag = false;
     btn.addEventListener("click", () => {
-      if (option === correctAnswr) {
-        score++;
-      } else score = score - 0.25;
+      if (flag == false) {
+        if (option === correctAnswer) {
+          score++;
+        } else score = score - 0.25;
 
-      nextQuestion();
+        flag = true;
+      }
+      btn.style.backgroundColor = "#f57424";
     });
-    scoreEle.textContent = `Score: ${score} / 5 `;
+
+    scoreEle.textContent = `Score: ${score} / ${quesJSON.length} `;
   });
 }
+
+// submit button
+submitEle.addEventListener("click", () => {
+  scoreEle.textContent = `Score: ${score} / ${quesJSON.length} `;
+  nextQuestion();
+});
 
 // function for population the next question
 function nextQuestion() {
   currenQues++;
+  console.log(currenQues);
   optEle.textContent = "";
 
   if (currenQues >= quesJSON.length) {
     ques.textContent = "Quiz completed";
     optEle.textContent = "";
+    nextEle.remove();
+    submitEle.remove();
   } else {
     showQuestions();
   }
