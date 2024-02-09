@@ -44,6 +44,13 @@ const quesJSON = [
 
 let score = 0;
 let currenQues = 0;
+let optionInside = "";
+let correctAnswerInside = "";
+let indexCorrectOption = "";
+let btnCurrent = "";
+let btnCorrectAnswer = "";
+
+
 // fetching all the the divs
 const ques = document.getElementById("question");
 const optEle = document.getElementById("options");
@@ -69,21 +76,23 @@ function showQuestions() {
   let shuffleOptions = shuffleArray(options);
 
   // Populating the options on div
-  shuffleOptions.forEach((option) => {
+
+  shuffleOptions.forEach((option, index) => {
     const btn = document.createElement("button");
     btn.textContent = option;
     optEle.appendChild(btn);
-    let flag = false;
-    btn.addEventListener("click", () => {
-      if (flag == false) {
-        if (option === correctAnswer) {
-          score++;
-        } else score = score - 0.25;
 
-        flag = true;
-      }
-      btn.style.backgroundColor = "#f57424";
+    // to get access for the correct answer button
+    if (option === correctAnswer) {
+      btnCorrectAnswer = btn;
+    }
+
+    btn.addEventListener("click", () => {
+      correctAnswerInside = correctAnswer;
+      optionInside = option;
+      btnCurrent = btn;
     });
+    // console.log(score);
 
     scoreEle.textContent = `Score: ${score} / ${quesJSON.length} `;
   });
@@ -91,9 +100,21 @@ function showQuestions() {
 
 // submit button
 submitEle.addEventListener("click", () => {
+  if (optionInside !== "") {
+    if (optionInside === correctAnswerInside) {
+      score++;
+      btnCorrectAnswer.style.backgroundColor = "#4e7b0b";
+    } else {
+      score = score - 0.25;
+      btnCorrectAnswer.style.backgroundColor = "#4e7b0b";
+      btnCurrent.style.backgroundColor = "#f52424";
+    }
+    // nextQuestion();
+  } else alert("No option selected");
+
   scoreEle.textContent = `Score: ${score} / ${quesJSON.length} `;
-  nextQuestion();
 });
+
 
 // function for population the next question
 function nextQuestion() {
